@@ -1,1 +1,0 @@
-This is project is for Burning Man 2015. We are taking the readings from a microcontroller, dumping them through a pipline, and finally rendering the values in a webpage. 
