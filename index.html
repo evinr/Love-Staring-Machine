@@ -1,54 +1,44 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Love Machine / Staring Contest Proof of Concept</title>
-<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-</head>
-<body>
-<div id='switch-state'> 
-<p>The switch is: Not Been Initialized</p>
-</div>
-<div id='timer-readout'>
-The timer is : Not Been Initialized
-</div>
-</body>
-<script type="text/javascript">
- var loop,
- 	 timer;
- var seconds = 59;
- var minutes = 3; 
-
- function dataLoader(){
-    $.getJSON("./result.json", function(data) {
-    	var currentState = data["state"][0];
-        $("#switch-state").html('<p>The switch is : ' + currentState + "</p>");
-    });
- }
-
-function myTimer() {
-    var s = seconds+"";
-    if (seconds < 10) {
-    	s = "0" + s;
-    }
-    document.getElementById("timer-readout").innerHTML = ("The timer is: " + minutes + ":" + s);
-    seconds --;
-    if (seconds === 0){
-    	seconds = 59;
-    	minutes --; 
-    }
-    if (minutes === 0){
-    	document.getElementById("timer-readout").innerHTML = ("The timer is: Out of Time");
-    }
-}
-
-function dataRender() {
-    loop = setInterval(dataLoader, 1000);
-    timer = setInterval(myTimer,1000);
-}
-
-$(document).ready(function() {
-	dataRender();
-});
-</script>
+    <head>
+        <title>Love Machine / Staring Contest Proof of Concept</title>
+        <script src="./Browser/jquery-1.11.0.min.js"></script>
+        <script src="./Browser/jquery-migrate-1.2.1.min.js"></script>
+        <script src="./Browser/app.js"></script>
+        <link rel="stylesheet" type="text/css" href="./Browser/style.css">
+    </head>
+    <body>
+        <div class="main-display">
+            <div id='timer-block'>
+                <span id='timer-readout'>4:00</span>
+            </div>
+            <div class="scores">
+                <span id="player-1">Player 1 Score is: 
+                    <span class="points" id="player-1-score">Not Been Initialized</span>
+                </span>
+                <span id="player-2">Player 2 Score is: 
+                    <span class="points" id="player-2-score">Not Been Initialized</span>
+                </span>
+            </div> 
+        </div>
+        <div class="secondary-display">
+            <form id="form">
+                <input type="text" placeholder="Player 1 Name" name="name">
+                <input type="text" placeholder="Player 2 Name" name="email" onblur="contactInfo()">
+            </form>
+            <span id="couple-name">Couple Name: Not Been Initialized</span>
+        </div>
+        <div>
+            <span id="average">The Average Score is: Not Been Initialized</span>
+        </div>  
+        <div>
+            <span id="high-score">The High Score is: Not Been Initialized</span>
+        </div>
+        <div>
+            <span id="date-time">Date and Time: Not Been Initialized</span>
+        </div> 
+        <div>
+            <span id="participant-total">Total Number of Participants: Not Been Initialized</span>
+        </div> 
+    </body>
 </html>

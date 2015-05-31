@@ -1,0 +1,53 @@
+div {
+	margin:.6vw;
+}
+body {
+	background-color: #ABB7B7;
+	font-family: 'Abril Fatface', cursive;
+	font-size: 1.5vw;
+}
+
+input {
+	width: 30vw;
+	height: 3.2vw;
+	font-size: 2vw;
+}
+
+.main-display {
+	background-color: yellow;
+	font-size: 2vw;
+	height: 10vw;
+}
+
+.scores{
+    margin-top: 6vw;
+}
+
+.points {
+	font-size: 3vw;
+}
+
+#player-2 {
+	float: right;
+}
+
+#couple-name {
+	float: right;
+	margin-top: -2.6vw;
+	font-size: 2vw;
+}
+
+#timer-block {
+	position: relative;
+	height:1vw;
+}
+
+#timer-readout {
+	font-size: 3vw;
+	position: absolute;
+	top: 150%;
+	left: 50%;
+    margin-right: -50%;
+	transform: translate(-50%, -50%) } 
+}
+
