@@ -2,7 +2,7 @@ div {
 	margin:.6vw;
 }
 body {
-	background-color: #ABB7B7;
+	background-color: #2c3e50;
 	font-family: 'Abril Fatface', cursive;
 	font-size: 1.5vw;
 }
@@ -14,13 +14,14 @@ input {
 }
 
 .main-display {
-	background-color: yellow;
+	background-color: #2980b9;
 	font-size: 2vw;
-	height: 10vw;
+	height: 13vw;
+	border-radius: 1vw;
 }
 
 .scores{
-    margin-top: 6vw;
+    margin-top: 8vw;
 }
 
 .points {
@@ -43,9 +44,9 @@ input {
 }
 
 #timer-readout {
-	font-size: 3vw;
+	font-size: 5vw;
 	position: absolute;
-	top: 150%;
+	top: 220%;
 	left: 50%;
     margin-right: -50%;
 	transform: translate(-50%, -50%) } 
