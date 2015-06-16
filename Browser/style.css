@@ -18,6 +18,7 @@ input {
 	font-size: 2vw;
 	height: 13vw;
 	border-radius: 1vw;
+	border: 1vw ridge magenta;
 }
 
 .scores{
@@ -28,7 +29,7 @@ input {
 	font-size: 3vw;
 }
 
-#player-2 {
+#player-2-points{
 	float: right;
 }
 

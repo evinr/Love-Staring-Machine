@@ -13,18 +13,18 @@
                 <span id='timer-readout'>4:00</span>
             </div>
             <div class="scores">
-                <span id="player-1">Player 1 Score is: 
-                    <span class="points" id="player-1-score">Not Been Initialized</span>
-                </span>
-                <span id="player-2">Player 2 Score is: 
-                    <span class="points" id="player-2-score">Not Been Initialized</span>
+                <span id="player-1">Player 1 Score is:</span>
+                        <span class="points" id="player-1-score">Not Been Initialized</span>
+                <span id="player-2-points">
+                    <span id="player-2">Player 2 Score is:</span>
+                        <span class="points" id="player-2-score">Not Been Initialized</span>
                 </span>
             </div> 
         </div>
         <div class="secondary-display">
             <form id="form">
-                <input type="text" placeholder="Player 1 Name" name="name">
-                <input type="text" placeholder="Player 2 Name" name="email" onblur="contactInfo()">
+                <input type="text" placeholder="Player 1 Name" name="name" id="p1">
+                <input type="text" placeholder="Player 2 Name" name="email" id="p2" onblur="contactInfo()">
             </form>
             <span id="couple-name">Couple Name: Not Been Initialized</span>
         </div>
