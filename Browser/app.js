@@ -1,5 +1,5 @@
 var SECONDS = 59;
-var MINTUES = 3; 
+var MINUTES = 3; 
 var SCORE = []; 
 var VALUE1;
 var VALUE2;
@@ -93,7 +93,7 @@ function initialization () {//initializes the persistant dashboard metrics for t
 function myTimer() {//Simple, non-accurate clock funtion 
     var secs = "" + SECONDS;
 
-    if ( minutes > 0){
+    if ( MINUTES > 0){
         SECONDS --;
     }
 
@@ -110,7 +110,7 @@ function myTimer() {//Simple, non-accurate clock funtion
         document.getElementById("timer-readout").innerHTML = ("Out of Time");
     }
 
-    document.getElementById("timer-readout").innerHTML = (MINUTES + ":" + s);
+    document.getElementById("timer-readout").innerHTML = (MINUTES + ":" + secs);
 }
 
 
