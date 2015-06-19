@@ -1,8 +1,8 @@
-var seconds = 59;
-var minutes = 3; 
-var score = []; 
-var value1;
-var value2;
+var SECONDS = 59;
+var MINTUES = 3; 
+var SCORE = []; 
+var VALUE1;
+var VALUE2;
 var sliceCount = 0;
 var p1data = [];
 var p2data = [];
@@ -10,23 +10,23 @@ var multiplierA;
 var multiplierB;
 
 
-function aggregateAverage () {
-    var average = []; //holds a list of all of the player scores
-    //calculates the average score of all players
-    //writes the average to localstorage
-    var allScores = localStorage.getItem("cumulativescores"); 
-    average =   allScores.reduce(function(previousValue, currentValue, index, array) {
+function aggregateAverage () {//calculates the average SCORE of all players
+    var average = []; //holds a cumulative list of all of the player scores
+
+    var allSCOREs = localStorage.getItem("cumulativeSCOREs"); 
+    
+    average =   allSCOREs.reduce(function(previousValue, currentValue, index, array) {
                     return previousValue + currentValue;
-                })/allScores.length;
-    document.getElementById("average").innerHTML = ("The Average Score is: " + average);
+                })/allSCOREs.length;
+    
+    document.getElementById("average").innerHTML = ("The Average SCORE is: " + average);
 }
 
 
-function average(data){
+function average (data) {
     var sum = data.reduce(function(sum, value){
-    return sum + value;
+        return sum + value;
     }, 0);
-
     var avg = sum / data.length;
     return avg;
 }
@@ -34,106 +34,123 @@ function average(data){
 
 function contactInfo () { //grabs the contact details and transforms them into a combination name and stores everything to local storage
     var coupleName, name, email;
+
     nameTemp = $('#form').serialize();
     chopped = nameTemp.split("&");
     nameOne = chopped[0].split("=")[1];
     nameTwo = chopped[1].split("=")[1];
-    //coupleName = nameOne + nameTwo;
-    //does a mashup of the names, giving a few options
 
     coupleName = this.nameMash (nameOne, nameTwo);
-    /////split before and after the inner vowels
-    document.getElementById("player-1").innerHTML = (nameOne + "'s Score is:");
-    document.getElementById("player-2").innerHTML = (nameTwo + "'s Score is:");
+
+    document.getElementById("player-1").innerHTML = (nameOne + "'s SCORE is:");
+    document.getElementById("player-2").innerHTML = (nameTwo + "'s SCORE is:");
     document.getElementById("couple-name").innerHTML = ("Couple Name: " + coupleName);
-    //writes to local storage
     localStorage.setItem("player1", nameOne); 
     localStorage.setItem("player2", nameTwo); 
     localStorage.setItem("couplename", coupleName); 
-    //
 }
 
 
 function datesTimes () {//grabs the time... no network or persistant time... Need a GPS module for the Raspberry PI
     var cleanDate;
+
     cleanDate = new Date().toLocaleString()
+
     document.getElementById("date-time").innerHTML = ("Date and Time: " + cleanDate); 
     localStorage.setItem("timestamp", cleanDate); 
 }
 
 
-function dataLoader(){
+function dataLoader(){//pulls the data from a local JSON file
     $.getJSON("../result.json", function(data) {
-        value1 = data["player1"];
-        value2 = data["player2"];
+
+        VALUE1 = data["player1"];
+        VALUE2 = data["player2"];
     });
 }
 
 
-function highScore () {
-    var tempScore = parseInt(localStorage.getItem("highscore"));
-    if (score > tempScore) {
-    localStorage.setItem("highscore", score); 
+function highScore () {//checks if any of the present SCOREs are higher than the all time high SCORE
+    var tempSCORE = parseInt(localStorage.getItem("highScore"));
+
+    if (SCORE > tempSCORE) {
+        //TODO: update the high SCORE on the board
+        localStorage.setItem("highScore", SCORE); 
     }
 }
 
 
-function initialization () {
-    //initializes the persistant dashboard metrics
-    localStorage.setItem("highscore", 0);
-    localStorage.setItem("totalparticipants", 0);
-    localStorage.setItem("average", 0);
+function initialization () {//initializes the persistant dashboard metrics for the first time
 
+    if (localStorage.getItem("highScore") == null) {
+            localStorage.setItem("highScore", 0);
+            localStorage.setItem("totalparticipants", 0);
+            localStorage.setItem("average", 0);
+        }
 }
 
 
-function myTimer() {
-    var s = seconds+"";
-    if (seconds < 10) {
-        s = "0" + s;
+function myTimer() {//Simple, non-accurate clock funtion 
+    var secs = "" + SECONDS;
+
+    if ( minutes > 0){
+        SECONDS --;
     }
-    document.getElementById("timer-readout").innerHTML = (minutes + ":" + s);
-    seconds --;
-    score[0,1] ++;
-    if (seconds === 0){
-        seconds = 59;
-        minutes --; 
-        score[0,1] + 10;
+
+    if (SECONDS < 10) {
+        secs = "0" + secs;
     }
-    if (minutes === 0){
+
+    if (SECONDS === 0){
+        SECONDS = 59;
+        MINUTES --; 
+    }
+
+    if (MINUTES === 0){
         document.getElementById("timer-readout").innerHTML = ("Out of Time");
     }
+
+    document.getElementById("timer-readout").innerHTML = (MINUTES + ":" + s);
 }
 
-function nameMash (p1,p2) {
-    if (p1.length > 2 && p2.length > 2){
-        return p1.substring(0,1).toUpperCase() + p1.substring(1,Math.floor(p1.length/2)).toLowerCase() + p2.substring(Math.floor(p2.length/2),p2.length).toLowerCase();
+
+function nameMash (p1,p2) {//celebrity name generator splits on the vowels or if all else fails just smash them together
+
+    if (p1.length > 5 || p2.length > 5) {//TODO: better qualifier to catch allow exceptions to be dumped into the else.
+        //use the p1 and p2 arguments and loop through to grab the regex vowels
+        //if there are more than 2 split on the second
+        //else split on the first vowel
     }
     else {
-        return p1.substring(0,1).toUpperCase() + p1.substring(1, p1.length).toLowerCase() + p2.toLowerCase();
+        if (p1.length > 2 && p2.length > 2){
+            return p1.substring(0,1).toUpperCase() + p1.substring(1,Math.floor(p1.length/2)).toLowerCase() + p2.substring(Math.floor(p2.length/2),p2.length).toLowerCase();
+        }
+        else {
+            return p1.substring(0,1).toUpperCase() + p1.substring(1, p1.length).toLowerCase() + p2.toLowerCase();
+        }
     }
 }
 
 
-function onRefreshInitialization () {
-    //initializes the persistant dashboard metrics
+function onRefreshInitialization () {//initializes the persistant dashboard metrics
     document.getElementById('p1').focus();
     $('#form')[0].reset();
 }
 
 
-function pointGenerator (multiplierA, multiplierB) {
+function pointGenerator (multiplierA, multiplierB) {//this function computes the points 
     return true;
+
 }
 
 
 function scoreRender () {
 
-    document.getElementById("player-1-score").innerHTML = value1 ? value1 : "Loading...";
-    document.getElementById("player-2-score").innerHTML = value2 ? value2 : "Loading...";
+    document.getElementById("player-1-score").innerHTML = VALUE1 ? VALUE1 : "Loading...";
+    document.getElementById("player-2-score").innerHTML = VALUE2 ? VALUE2 : "Loading...";
 
     //sets the high scoreRender
-    document.getElementById("high-score").innerHTML = ("The High Score is: " + localStorage.getItem("highscore"));
+    document.getElementById("high-score").innerHTML = ("The High Score is: " + localStorage.getItem("highScore"));
 }
 
 
@@ -152,14 +169,14 @@ function standardDeviation(values){
 
 
 function timeSlice () {
-    p1data[sliceCount] = value1;
-    p2data[sliceCount] = value2;
+
+    p1data[sliceCount] = VALUE1;
+    p2data[sliceCount] = VALUE2;
     sliceCount ++;
     //Store 240 time slices (one per second) for both players
-    console.log("player 1 ", standardDeviation(p1data));
+
     multiplierA = standardDeviation(p1data);
     multiplierB = standardDeviation(p2data);
-    console.log("player 2 ", multiplierA);
     //this data is used for modeling the results
 
     //creates a baseline to determine if disconnet has occured
@@ -169,33 +186,29 @@ function timeSlice () {
 }
 
 
-function totalParticipants () {
-    //keeps a rolling total on how many times the test has been ran
+function totalParticipants () {//keeps a rolling total on how many times the test has been ran
     var newTotal = parseInt(localStorage.getItem("totalparticipants")) + 1;
+    
     document.getElementById("participant-total").innerHTML = ("Total Number of Participants: " + newTotal); 
-    //writes to local storage
     localStorage.setItem("totalparticipants", newTotal); 
 }
 
 
-function totalPoints () {
+function totalPoints () {//create a rolling total
     var newTotal;
-    //create a rolling total
-    //writes the average to localstorage
-    localStorage.setItem("totalparticipants", newTotal);
+
+    localStorage.setItem("averagepoints", rollingAverage);
     localStorage.setItem("totalparticipants", newTotal);
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////////
-function dataRender() {//keep bulk of execution of the app within this function
-    if (localStorage.getItem("highscore") == null) {
-        initialization();
-    }
-    //display the aggregated average
-    //
+function render() {//keep all of the execution of the app within this function
+    initialization();
     onRefreshInitialization();
+
+    //TODO: display the aggregated average
     totalParticipants();
     datesTimes();
     scoreRender();
@@ -207,7 +220,8 @@ function dataRender() {//keep bulk of execution of the app within this function
     leader = setInterval(highScore,1000);
 }
 
+
 $(document).ready(function() {
-	dataRender();
+	render();
 });
 
