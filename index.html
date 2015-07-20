@@ -23,16 +23,16 @@
         </div>
         <div class="secondary-display">
             <form id="form">
-                <input type="text" placeholder="Player 1 Name" name="name" id="p1">
-                <input type="text" placeholder="Player 2 Name" name="email" id="p2" onblur="contactInfo()">
+                <input type="text" placeholder="Player 1 Name" name="name" autocomplete="off" id="p1" onkeypress="if (event.keyCode==13){ document.getElementById('p2').focus();}">
+                <input type="text" placeholder="Player 2 Name" name="email" autocomplete="off" id="p2" onblur="contactInfo()" onkeypress="if (event.keyCode==13){ contactInfo()}" >
             </form>
-            <span id="couple-name">Couple Name: Not Been Initialized</span>
+            <span id="couple-name"><--- Please Enter Your Names Here!</span>
         </div>
         <div>
             <span id="average">The Average Score is: Not Been Initialized</span>
         </div>  
         <div>
-            <span id="high-score">The High Score is: Not Been Initialized</span>
+            <span>The High Score is: <span id="high-score">Not Been Initialized</span></span>
         </div>
         <div>
             <span id="date-time">Date and Time: Not Been Initialized</span>

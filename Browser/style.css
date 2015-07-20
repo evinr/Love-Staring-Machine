@@ -11,6 +11,7 @@ input {
 	width: 30vw;
 	height: 3.2vw;
 	font-size: 2vw;
+  	padding: 0 10px 0 29px;
 }
 
 .main-display {

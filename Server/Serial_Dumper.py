@@ -25,15 +25,16 @@ while 1:
     #regex to parse out the values
     newStr = (str(rawString))
     m = re.search("1:(\d+)::2:(\d+)", newStr)
-    # print (rawString)
+    #print (rawString)
     if m:
         newVarA = int(m.groups()[0])
         newVarB = int(m.groups()[1])
     if ogVarA != newVarA and ogVarB != newVarB:
         #debugging purposes
-        # print "player1 ", newVarA
-        # print "player2 ", newVarB
+        print "player1 ", newVarA
+        print "player2 ", newVarB
         with open('../result.json', 'w+') as fp:
+             print "writing to file"
              json.dump(data, fp,  sort_keys=True, indent=4)
         ogVarA = newVarA 
         ogVarB = newVarB
