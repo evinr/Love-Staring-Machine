@@ -1,44 +1,53 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Love Machine / Staring Contest Proof of Concept</title>
+        <title>Love Machine Staring Game</title>
         <script src="./Browser/jquery-1.11.0.min.js"></script>
         <script src="./Browser/jquery-migrate-1.2.1.min.js"></script>
         <script src="./Browser/app.js"></script>
         <link rel="stylesheet" type="text/css" href="./Browser/style.css">
+
+        <style>
+
+        </style>    
     </head>
     <body>
-        <div class="main-display">
             <div id='timer-block'>
                 <span id='timer-readout'>4:00</span>
+                <div id="couple-name">Please Enter Your Names Below!</div>
             </div>
-            <div class="scores">
-                <span id="player-1">Player 1 Score is:</span>
-                        <span class="points" id="player-1-score">Not Been Initialized</span>
-                <span id="player-2-points">
-                    <span id="player-2">Player 2 Score is:</span>
-                        <span class="points" id="player-2-score">Not Been Initialized</span>
-                </span>
+            <div>
+                <div class="scores1">
+                    <span id="player-1">Player 1 Score is:</span>
+                        <br>
+                            <span class="points" id="player-1-score">Not Been Initialized</span>
+                </div> 
+                <div class="scores2">
+                    <span id="player-2-points">
+                        <span id="player-2">Player 2 Score is:</span>
+                                <span class="points" id="player-2-score">Not Been Initialized</span>
+                    </span>
+                </div> 
+            </div>  
+            <div class="secondary-display">
+                <form id="form">
+                    <input type="text" placeholder="Player 1 Name" name="name1" autocomplete="off" id="p1" onkeypress="if (event.keyCode==13){ document.getElementById('p2').focus();}">
+                    <input type="text" placeholder="Player 2 Name" name="name2" autocomplete="off" id="p2" onblur="contactInfo()" onkeypress="if (event.keyCode==13){ contactInfo()}" >
+
+                    <input type="text" placeholder="Player 1 Email Address" name="email1" autocomplete="off" id="pe1" onkeypress="if (event.keyCode==13){ document.getElementById('pe2').focus();}">
+                    <input type="text" placeholder="Player 2 Email Address" name="email2" autocomplete="off" id="pe2" onblur="contactInfo()" onkeypress="if (event.keyCode==13){ contactInfo()}" >
+                </form>
+            </div>
+        <div class="bottom">
+            <div class="avg left">
+                <span>The Average Score is: <span id="average">Not Been Initialized</span></span>
+            </div>  
+            <div class="high left">
+                <span>The High Score is: <span id="high-score">Not Been Initialized</span></span>
+            </div>
+            <div class="total left">
+                <span>Total Number of Participants: <span id="participant-total">Not Been Initialized</span></span>
             </div> 
         </div>
-        <div class="secondary-display">
-            <form id="form">
-                <input type="text" placeholder="Player 1 Name" name="name" autocomplete="off" id="p1" onkeypress="if (event.keyCode==13){ document.getElementById('p2').focus();}">
-                <input type="text" placeholder="Player 2 Name" name="email" autocomplete="off" id="p2" onblur="contactInfo()" onkeypress="if (event.keyCode==13){ contactInfo()}" >
-            </form>
-            <span id="couple-name"><--- Please Enter Your Names Here!</span>
-        </div>
-        <div>
-            <span id="average">The Average Score is: Not Been Initialized</span>
-        </div>  
-        <div>
-            <span>The High Score is: <span id="high-score">Not Been Initialized</span></span>
-        </div>
-        <div>
-            <span id="date-time">Date and Time: Not Been Initialized</span>
-        </div> 
-        <div>
-            <span id="participant-total">Total Number of Participants: Not Been Initialized</span>
-        </div> 
     </body>
 </html>

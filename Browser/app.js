@@ -24,7 +24,7 @@ function aggregateAverage () {//calculates the average SCORE of all players
     // for (var i = 0; i < allScores.length; i++){
 
     average = Math.round(average/allScores.length);
-    document.getElementById("average").innerHTML = ("The Average Score is: " + average);
+    document.getElementById("average").innerHTML = (average);
 }
 
 
@@ -37,7 +37,7 @@ function average (data) {
 }
 
 
-function contactInfo () { //grabs the contact details and transforms them into a combination name and stores everything to local storage
+function contactNameInfo () { //grabs the contact details and transforms them into a combination name and stores everything to local storage
     var coupleName, name, email;
 
     nameTemp = $('#form').serialize();
@@ -60,13 +60,30 @@ function contactInfo () { //grabs the contact details and transforms them into a
     localStorage.setItem("couplename", coupleName); 
 }
 
+function contactEmailInfo () { //grabs the contact details and transforms them into a combination name and stores everything to local storage
+    var coupleName, name, email;
+
+    nameTemp = $('#form').serialize();
+    chopped = nameTemp.split("&");
+    nameOne = chopped[2].split("=")[1];
+    nameTwo = chopped[3].split("=")[1];
+
+    var re = new RegExp("\s*([A-Za-z\d]+)\s*");
+
+    nameOne = re.exec(nameOne)[0];
+    nameTwo = re.exec(nameTwo)[0];
+
+
+    localStorage.setItem("player1email", nameOne); 
+    localStorage.setItem("player2email", nameTwo); 
+
+}
+
 
 function datesTimes () {//grabs the time... no network or persistant time... Need a GPS module for the Raspberry PI
     var cleanDate;
 
     cleanDate = new Date().toLocaleString()
-
-    document.getElementById("date-time").innerHTML = ("Date and Time: " + cleanDate); 
     localStorage.setItem("timestamp", cleanDate); 
 }
 
@@ -77,6 +94,18 @@ function dataLoader(){//pulls the data from a local JSON file
         VALUE1 = data["player1"];
         VALUE2 = data["player2"];
     });
+}
+
+
+function finalMessage () {//Delivers the final message in the form of a modal overlay based on compadability of scores
+    //derive a compatability index based on distance of final scores
+
+    //call json with all of the messages
+    $.getJSON("../final_messages.json", function(data) {
+
+    });
+    //render the modal overlay
+    overlay();
 }
 
 
@@ -130,6 +159,12 @@ function myTimer() {//Simple, non-accurate clock funtion
         document.getElementById("timer-readout").innerHTML = ("Out of Time");
         makePointsFlag = false;
         storeScoresForAverages();
+        finalMessage();
+        clearTimeout(loop);
+        clearTimeout(slice);
+        clearTimeout(countdown);
+        clearTimeout(points);
+        clearTimeout(leader);
     }
 }
 
@@ -180,7 +215,6 @@ function nameMash (p1,p2) {//celebrity name generator splits on the vowels or if
             return player1 + player2;
 
         }
-        //else split on the first vowel
     }
     else {
         if (p1.length > 2 && p2.length > 2){
@@ -199,54 +233,48 @@ function onRefreshInitialization () {//initializes the persistant dashboard metr
 }
 
 
+function overlay() {
+    el = document.getElementById("overlay");
+    el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+}
+
+
 function pointGenerator () {//this function computes the points 
     //TODO: Make a funtion to check directional trends and integrate the result into this function
     if (makePointsFlag) {
-        var temp1Multipiler,
-            temp2Multipler,
-            trendValue1,
+        var trendValue1,
             trendValue2;
 
-        if (multiplierA < .1) {
-            temp1Multipiler = .1;
-        }
-        else {
-            temp1Multipiler = multiplierA;
-        }
-        if (multiplierB < .1) {
-            temp2Multipiler = .1;
-        }
-        else {
-            temp2Multipiler = multiplierB;
-        }
 
         trendOfReadings();
         if (p1trend === '0'){
-            trendValue1 = 10;
+            trendValue1 = 3;
         }
         else if (p1trend === '+'){
-            trendValue1 = 100;
+            console.log(p1trend);
+            trendValue1 = 10;
         }
         else if (p1trend === '-'){
             trendValue1 = 1;
         }
         else {
-            trendValue1 = 5;
+            trendValue1 = 1;
         }
         if (p2trend === '0'){
-            trendValue2 = 10;
+            trendValue2 = 3;
         }
         else if (p2trend === '+'){
-            trendValue2 = 100;
+            console.log(p2trend);
+            trendValue2 = 10;
         }
         else if (p2trend === '-'){
             trendValue2 = 1;
         }
         else {
-            trendValue2 = 5;
+            trendValue2 = 1;
         }
-        temp1Multipiler ? SCORE[0] += Math.round(trendValue1 * temp1Multipiler) : null;
-        temp2Multipiler ? SCORE[1] += Math.round(trendValue2 * temp2Multipiler) : null;
+        trendValue1 ? SCORE[0] += Math.round(trendValue1) : null;
+        trendValue2 ? SCORE[1] += Math.round(trendValue2) : null;
         scoreRender();
     }
 }
@@ -304,7 +332,7 @@ function timeSlice () {
 function totalParticipants () {//keeps a rolling total on how many times the test has been ran
     var newTotal = parseInt(localStorage.getItem("totalparticipants")) + 1;
     
-    document.getElementById("participant-total").innerHTML = ("Total Number of Participants: " + newTotal); 
+    document.getElementById("participant-total").innerHTML = (newTotal); 
     localStorage.setItem("totalparticipants", newTotal); 
 }
 
@@ -319,24 +347,25 @@ function totalPoints () {//create a rolling total
 function trendOfReadings () {//Takes in the last n readings and makes comparison to determine directional trending
     var driftDebounce = 0; //tune based off of how much it wobbles
 
-    if (sliceCount > 5){
+    if (sliceCount > 5){//slice count is always ahead by one
 
         //simple and needs refactoring
         //TODO: take the last five averages and do a simple comparison for smoothing
-        if (p1data[sliceCount - 0] > p1data[sliceCount - 1] &&  p1data[sliceCount - 1] > p1data[sliceCount - 2]){
+
+        if (p1data[sliceCount - 1] > p1data[sliceCount - 2] &&  p1data[sliceCount - 2] > p1data[sliceCount - 3]){
             p1trend = "+";
         }
-        else if (p1data[sliceCount - 0] < p1data[sliceCount - 1] && p1data[sliceCount - 1] < p1data[sliceCount - 2]){
+        else if (p1data[sliceCount - 1] < p1data[sliceCount - 2] && p1data[sliceCount - 2] < p1data[sliceCount - 3]){
             p1trend = "-";
         }
         else {
             p1trend = "0";
         }
         
-         if (p2data[sliceCount - 0] > p2data[sliceCount - 1] &&  p2data[sliceCount - 1] > p2data[sliceCount - 2]){
+         if (p2data[sliceCount - 1] > p2data[sliceCount - 2] &&  p2data[sliceCount - 2] > p2data[sliceCount - 3]){
             p2trend = "+";
         }
-        else if (p2data[sliceCount - 0] < p2data[sliceCount - 1] && p2data[sliceCount - 1] < p2data[sliceCount - 2]){
+        else if (p2data[sliceCount - 1] < p2data[sliceCount - 2] && p2data[sliceCount - 2] < p2data[sliceCount - 3]){
             p2trend = "-";
         }
         else {
@@ -354,19 +383,18 @@ function render() {//keep all of the execution of the app within this function
     onRefreshInitialization();
     aggregateAverage();
     storeScoresForAverages();
-    //TODO: display the aggregated average
     totalParticipants();
     datesTimes();
-    scoreRender();
+    pointGenerator();
     dataLoader();
-    setInterval(scoreRender, 1000);
+    //TODO: kill these after being done
     loop = setInterval(dataLoader, 1000);
     slice = setInterval(timeSlice, 1000);
     countdown = setInterval(myTimer,1000);
-    points = setInterval(pointGenerator, 333);
+    points = setInterval(pointGenerator, 633);
     leader = setInterval(highScore,1000);
+    //TODO: store everything in local storage better for extraction at a later date
 }
-
 
 $(document).ready(function() {
 	render();
