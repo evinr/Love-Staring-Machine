@@ -101,7 +101,7 @@ function finalMessage () {//Delivers the final message in the form of a modal ov
     //derive a compatability index based on distance of final scores
 
     //call json with all of the messages
-    $.getJSON("../final_messages.json", function(data) {
+    $.getJSON("./final_messages.json", function(data) {
 
     });
     //render the modal overlay
@@ -123,12 +123,12 @@ function highScore () {//checks if any of the present SCOREs are higher than the
 
 function initialization () {//initializes the persistant dashboard metrics for the first time
 
-    if (localStorage.getItem("highScore") === 0) {
-            localStorage.setItem("highScore", 0);
-            localStorage.setItem("totalparticipants", 0);
-            localStorage.setItem("average", 0);
-            //localStorage.setItem("cumulativescores", )
-        }
+    if (localStorage.getItem("highScore") === 0 || localStorage.getItem("totalparticipants") === 0 || localStorage.getItem("average") === 0 || localStorage.getItem("cumulativescores") === 0) { //add all of the local storage variables 
+        localStorage.setItem("highScore", 0);
+        localStorage.setItem("totalparticipants", 0);
+        localStorage.setItem("average", 0);
+        localStorage.setItem("cumulativescores", 0)
+    }
 }
 
 
@@ -145,7 +145,7 @@ function myTimer() {//Simple, non-accurate clock funtion
 
         if (SECONDS === 0){
             SECONDS = 59;
-            secs = "00";
+            secs = "00";//TODO: fix this where the at 1:00 it displays :00
             MINUTES --; 
         }
         if (MINUTES > 0){
@@ -387,12 +387,12 @@ function render() {//keep all of the execution of the app within this function
     datesTimes();
     pointGenerator();
     dataLoader();
-    //TODO: kill these after being done
     loop = setInterval(dataLoader, 1000);
     slice = setInterval(timeSlice, 1000);
     countdown = setInterval(myTimer,1000);
     points = setInterval(pointGenerator, 633);
     leader = setInterval(highScore,1000);
+    
     //TODO: store everything in local storage better for extraction at a later date
 }
 
