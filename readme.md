@@ -1,4 +1,4 @@
-This is project is for Burning Man 2015. We are taking the readings from a microcontroller, dumping them through a pipline, and finally rendering the values in a webpage. 
+This is project was for Burning Man 2015. Where two individuals "frequencies" are measured using their galvanic skin response while staring into eachothers eyes. 
 
 To run this project:
 
@@ -6,4 +6,4 @@ To run this project:
 
 	Execute the ./Server/Serial_Dumper.py on the host computer. The port might need to be adjusted. Ensure the data in the JSON is changing.
 
-	Launch a webserver, like servedir, in the root directory of this project and open the ./index.html file in a web browser.
+	Launch a webserver, like servedir, in the home directory of this project and open the ./Love-Machine-Staring-Contest/index.html file in a web browser.
