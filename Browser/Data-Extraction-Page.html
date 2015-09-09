@@ -4,12 +4,45 @@
         <title>Love Machine Local Storage Data Extraction Tool</title>
         <script src="./Browser/jquery-1.11.0.min.js"></script>
         <script src="./Browser/jquery-migrate-1.2.1.min.js"></script>
-        <script src="./Browser/app.js"></script>
         <link rel="stylesheet" type="text/css" href="./Browser/style.css">
     </head>
     <body>
-        <div class="main-display">
-            <p>This page allows for the contents that are stored in local storage to be extracted into a JSON file that will be used to store the data after the game has been used for the week.</p>
-        </div>
+    <input id="filename" type="text" placeholder="Please enter filename" />
+<button for="filename">click</button><a id="download" download="" href=""></a>
+<br />
+<div class="shape"></div>
     </body>
+    <script>
+        $(function () {
+    $("[for=filename]").on("click", function (e) {
+        var shape = $(".shape"),
+            name = $("#filename").val() || "data-" + $.now();
+        shape.data("style", shape.css(["color", "width", "height"]));
+        var request = function (url, filename) {
+            var file = {
+                json: localStorage.getItem("finaldata")
+            };
+            return $.ajax({
+                beforeSend: function (jqxhr, settings) {
+                    jqxhr.filename = filename;
+                },
+                url: url,
+                type: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                data: file
+            }).then(function (data, textStatus, jqxhr) {
+                    $("a#download").attr({
+                        "download": jqxhr.filename + ".json",
+                            "href": "data:application/json;charset=utf8;base64," 
+                                    + window.btoa(JSON.stringify(data))
+                    }).get(0).click();
+             }, function(jqxhr, textStatus, errorThrown) {
+                  console.log(textStatus, errorThrown)
+            });
+        };
+        request("/echo/json/", name)
+    });
+})
+    </script>
 </html>
