@@ -11,6 +11,11 @@ var p2trend = "0";
 var multiplierA;
 var multiplierB;
 var makePointsFlag = true; 
+var P1NAME;
+var P2NAME;	
+var P1EMAIL;
+var P2EMAIL;
+var COMBONAME = null;
 
 function add(a, b) {
     return a + b;
@@ -19,7 +24,7 @@ function add(a, b) {
 function aggregateAverage () {//calculates the average SCORE of all players
     var average = 0; //holds a cumulative list of all of the player scores
     var tempString = localStorage.getItem("cumulativescores");
-    var allScores = tempString.split(","); 
+    var allScores = tempString.split(",") ? tempString.split(",") :"0,0"; 
     average = allScores.reduce(function(a, b){a= parseFloat(a);b= parseFloat(b); return a+b;})
     // for (var i = 0; i < allScores.length; i++){
 
@@ -49,15 +54,15 @@ function contactNameInfo () { //grabs the contact details and transforms them in
 
     nameOne = re.exec(nameOne)[0];
     nameTwo = re.exec(nameTwo)[0];
+	P1NAME = nameOne;
+	P2NAME = nameTwo;
 
     coupleName = this.nameMash (nameOne, nameTwo);
+	COMBONAME = coupleName;
 
     document.getElementById("player-1").innerHTML = (nameOne + "'s Score is:");
     document.getElementById("player-2").innerHTML = (nameTwo + "'s Score is:");
     document.getElementById("couple-name").innerHTML = ("Couple Name: " + coupleName);
-    localStorage.setItem("player1", nameOne); 
-    localStorage.setItem("player2", nameTwo); 
-    localStorage.setItem("couplename", coupleName); 
 }
 
 function contactEmailInfo () { //grabs the contact details and transforms them into a combination name and stores everything to local storage
@@ -72,10 +77,11 @@ function contactEmailInfo () { //grabs the contact details and transforms them i
 
     nameOne = re.exec(nameOne)[0];
     nameTwo = re.exec(nameTwo)[0];
-
-
-    localStorage.setItem("player1email", nameOne); 
-    localStorage.setItem("player2email", nameTwo); 
+	P1EMAIL	= nameOne;
+	P2EMAIL = nameTwo;
+elmFocus = document.getElementById('p1');
+console.log(elmFocus);
+	elmFocus.focus();
 
 }
 
@@ -89,7 +95,7 @@ function datesTimes () {//grabs the time... no network or persistant time... Nee
 
 
 function dataLoader(){//pulls the data from a local JSON file
-    $.getJSON("../result.json", function(data) {
+    $.getJSON("http://localhost:8000/Love-Staring-Machine/result.json", function(data) {
 
         VALUE1 = data["player1"];
         VALUE2 = data["player2"];
@@ -99,13 +105,66 @@ function dataLoader(){//pulls the data from a local JSON file
 
 function finalMessage () {//Delivers the final message in the form of a modal overlay based on compadability of scores
     //derive a compatability index based on distance of final scores
+	var p1Score = SCORE[0];
+	var p2Score = SCORE[1];
+	var higherScore = p1Score > p2Score ? p1Score : p2Score;
 
-    //call json with all of the messages
-    $.getJSON("./final_messages.json", function(data) {
-
-    });
+	var distance = Math.abs(p1Score - p2Score);
+	var relDistance = distance / higherScore;
+	var message = [
+				"Hell No!!!",
+				"Y'all Fuck",
+				"True Love!"
+			];
+	var messenger;
+	if (relDistance > .1) {
+		messenger = 0;
+		
+	}
+	else if (relDistance > .05) {
+		messenger = 1;
+	}
+	else {
+		messenger = 2;
+	}
+	
     //render the modal overlay
-    overlay();
+            document.getElementById("timer-readout").innerHTML = (message[messenger]);
+}
+
+
+function finalData () {
+//Stpres all he data as an object
+	var finalObject = {};
+	var totalFinalObjects = JSON.parse(localStorage.getItem("finalobjects"));
+	var participants = localStorage.getItem("totalparticipants");
+	var p1Name = P1NAME ? P1NAME : null;
+		p2Name = P2NAME ? P2NAME : null;
+	var coupleName = COMBONAME ? COMBONAME : null; 
+		p1Email = P1EMAIL ? P1EMAIL : null;
+		p2Email = P2EMAIL ? P2EMAIL : null;
+	//grabs from localstorage the entire 
+
+	totalFinalObjects[participants] = {
+		'p1': {
+			'n': p1Name,
+			'e': p1Email,
+			'p': SCORE[0],
+			's': p1data
+		},
+		'p2' : {
+			'n': p2Name,
+			'e': p1Email,
+			'p': SCORE[1],
+			's': p2data 
+					
+		},
+		'n': COMBONAME
+	
+	};
+
+	 localStorage.setItem("finalobjects", JSON.stringify(totalFinalObjects));
+
 }
 
 
@@ -123,12 +182,12 @@ function highScore () {//checks if any of the present SCOREs are higher than the
 
 function initialization () {//initializes the persistant dashboard metrics for the first time
 
-    if (localStorage.getItem("highScore") === 0 || localStorage.getItem("totalparticipants") === 0 || localStorage.getItem("average") === 0 || localStorage.getItem("cumulativescores") === 0) { //add all of the local storage variables 
-        localStorage.setItem("highScore", 0);
-        localStorage.setItem("totalparticipants", 0);
-        localStorage.setItem("average", 0);
-        localStorage.setItem("cumulativescores", 0)
-    }
+      //add all of the local storage variables 
+        //localStorage.setItem("highScore", 0);
+        //localStorage.setItem("totalparticipants", 0);
+        //localStorage.setItem("average", 0);
+        //localStorage.setItem("cumulativescores", 0)
+    	localStorage.setItem("finalobjects", "{}");
 }
 
 
@@ -156,10 +215,10 @@ function myTimer() {//Simple, non-accurate clock funtion
         }
     }
     else {
-        document.getElementById("timer-readout").innerHTML = ("Out of Time");
         makePointsFlag = false;
         storeScoresForAverages();
         finalMessage();
+		finalData();
         clearTimeout(loop);
         clearTimeout(slice);
         clearTimeout(countdown);
@@ -170,7 +229,6 @@ function myTimer() {//Simple, non-accurate clock funtion
 
 
 function nameMash (p1,p2) {//celebrity name generator splits on the vowels or if all else fails just smash them together
-
     if (p1.length > 5 || p2.length > 5) {//TODO: Clean up this logic and make it more compact 
         //use the p1 and p2 arguments and loop through to grab the regex vowels
         var re = /[aeiou]/gi;
@@ -197,7 +255,7 @@ function nameMash (p1,p2) {//celebrity name generator splits on the vowels or if
             return player1 + player2;
         }
         else {
-            var i = 1
+            var i = 0
             while ((match = re.exec(p1)) != null) {
                 i ++;
                 if (i == 1){
@@ -205,7 +263,7 @@ function nameMash (p1,p2) {//celebrity name generator splits on the vowels or if
                 } 
             }
 
-            var z = 1
+            var z = 0
             while ((match = re.exec(p2)) != null) {
                 z ++;
                 if (z == 1){
@@ -248,27 +306,25 @@ function pointGenerator () {//this function computes the points
 
         trendOfReadings();
         if (p1trend === '0'){
-            trendValue1 = 3;
+            trendValue1 = 9;
         }
         else if (p1trend === '+'){
-            console.log(p1trend);
-            trendValue1 = 10;
+            trendValue1 = 30;
         }
         else if (p1trend === '-'){
-            trendValue1 = 1;
+            trendValue1 = 5;
         }
         else {
             trendValue1 = 1;
         }
         if (p2trend === '0'){
-            trendValue2 = 3;
+            trendValue2 = 9;
         }
         else if (p2trend === '+'){
-            console.log(p2trend);
-            trendValue2 = 10;
+            trendValue2 = 30;
         }
         else if (p2trend === '-'){
-            trendValue2 = 1;
+            trendValue2 = 5;
         }
         else {
             trendValue2 = 1;
@@ -379,7 +435,7 @@ function trendOfReadings () {//Takes in the last n readings and makes comparison
 
 ///////////////////////////////////////////////////////////////////////////////
 function render() {//keep all of the execution of the app within this function
-    initialization();
+   //initialization();
     onRefreshInitialization();
     aggregateAverage();
     storeScoresForAverages();
@@ -387,6 +443,7 @@ function render() {//keep all of the execution of the app within this function
     datesTimes();
     pointGenerator();
     dataLoader();
+
     loop = setInterval(dataLoader, 1000);
     slice = setInterval(timeSlice, 1000);
     countdown = setInterval(myTimer,1000);
