@@ -31,12 +31,15 @@
             </div>  
             <div class="secondary-display">
                 <form id="form">
-                    <input type="text" placeholder="Player 1 Name" name="name1" autocomplete="off" id="p1" onkeypress="if (event.keyCode==13){ document.getElementById('p2').focus();}">
+                    <input tabindex="1" type="text" placeholder="Player 1 Name" name="name1" autocomplete="off" id="p1" onkeypress="if (event.keyCode==13){ document.getElementById('p2').focus();}">
                     <input type="text" placeholder="Player 2 Name" name="name2" autocomplete="off" id="p2" onblur="contactNameInfo()" onkeypress="if (event.keyCode==13){ contactNameInfo(); document.getElementById('pe1').focus();}" >
 
                     <input type="text" placeholder="Player 1 Email Address" name="email1" autocomplete="off" id="pe1" onkeypress="if (event.keyCode==13){ document.getElementById('pe2').focus();}">
                     <input type="text" placeholder="Player 2 Email Address" name="email2" autocomplete="off" id="pe2" onblur="contactEmailInfo()" onkeypress="if (event.keyCode==13){ contactEmailInfo()}" >
                 </form>
+                <div class="email-div">
+                    <span id="email-message">Enter your email addresses for a more detailed analysis</span>
+                </div>
             </div>
         <div class="bottom">
             <div class="avg left">

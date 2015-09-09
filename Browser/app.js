@@ -67,22 +67,16 @@ function contactNameInfo () { //grabs the contact details and transforms them in
 
 function contactEmailInfo () { //grabs the contact details and transforms them into a combination name and stores everything to local storage
     var coupleName, name, email;
-
+    var atRegex = /%40/g;
     nameTemp = $('#form').serialize();
     chopped = nameTemp.split("&");
     nameOne = chopped[2].split("=")[1];
     nameTwo = chopped[3].split("=")[1];
 
-    var re = new RegExp("\s*([A-Za-z\d]+)\s*");
+	P1EMAIL	= nameOne.replace(atRegex, '@');
+	P2EMAIL = nameTwo.replace(atRegex,'@');
 
-    nameOne = re.exec(nameOne)[0];
-    nameTwo = re.exec(nameTwo)[0];
-	P1EMAIL	= nameOne;
-	P2EMAIL = nameTwo;
-elmFocus = document.getElementById('p1');
-console.log(elmFocus);
-	elmFocus.focus();
-
+    document.getElementById("email-message").innerHTML = ("Thanks! We will be getting back to you sometime before the next burn!");
 }
 
 
